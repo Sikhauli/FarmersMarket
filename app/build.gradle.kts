@@ -1,13 +1,24 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.jetbrains.kotlin.android)
+  id("kotlin-kapt")
+  id("com.google.dagger.hilt.android")
+  id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+
 
 android {
   namespace = "com.example.farmersmarket"
   compileSdk = 34
 
+  buildFeatures {
+    buildConfig = true
+  }
+
   defaultConfig {
+
     applicationId = "com.example.farmersmarket"
     minSdk = 26
     targetSdk = 34
@@ -18,6 +29,19 @@ android {
     vectorDrawables {
       useSupportLibrary = true
     }
+
+    // Load API key from apikey.properties
+    val apikeyPropertiesFile = project.rootProject.file("apikeys.properties")
+    val apikeyProperties = Properties()
+    apikeyProperties.load(apikeyPropertiesFile.inputStream())
+
+    // Get API_KEY property value, defaulting to empty string if not found
+    val apiKey = apikeyProperties.getProperty("API_KEY") ?: ""
+
+    // Add API_KEY as a BuildConfig field
+    buildConfigField("String", "API_KEY", "\"$apiKey\"")
+    manifestPlaceholders["GOOGLE_API_KEY"] = apiKey
+
   }
 
   buildTypes {
@@ -47,6 +71,41 @@ android {
 }
 
 dependencies {
+
+  // Mapbox Maps SDK
+  implementation(libs.plugin.gestures)
+  implementation(libs.plugin.compose)
+  implementation(libs.android)
+  implementation(libs.mapbox.android.sdk)
+
+  implementation(libs.play.services.maps.v1802)
+  implementation(libs.osmdroid.android)
+
+  // KTX for the Maps SDK for Android
+  implementation(libs.maps.ktx)
+  // KTX for the Maps SDK for Android Utility Library
+  implementation(libs.maps.utils.ktx)
+
+  //Lifecycle
+  implementation(libs.androidx.lifecycle.viewmodel.ktx)
+  implementation(libs.androidx.lifecycle.runtime.compose)
+
+  //Google Services & Maps
+  implementation(libs.play.services.location)
+  implementation(libs.maps.compose.v290)
+  implementation(libs.play.services.maps)
+
+  //Accompanist (Permission)
+  implementation(libs.accompanist.permissions)
+
+  // Hilt and Compose Integration
+  implementation(libs.androidx.hilt.navigation.compose)
+
+  //Hilt
+  implementation(libs.hilt.android)
+  kapt(libs.hilt.compiler)
+
+  implementation(libs.accompanist.permissions.v0300)
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)

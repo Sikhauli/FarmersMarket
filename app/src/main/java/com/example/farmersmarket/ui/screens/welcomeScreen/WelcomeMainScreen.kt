@@ -1,5 +1,7 @@
 package com.example.farmersmarket.ui.screens.welcomeScreen
 
+import MapLocationScreen
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,23 +12,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.BuyerOrSeller
+import androidx.navigation.NavHostController
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.EnterCredentials
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.EnterName
-import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.Welcome
-import com.example.farmersmarket.ui.screens.welcomeScreen.component.WelcomeScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.HomeScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.LocationScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.UserTypeScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.component.UserTypeScreen
+
 
 sealed class RegisterScreen {
-  data object Welcome : RegisterScreen()
-  data object BuyerOrSeller : RegisterScreen()
+  data object UserTypeScreen : RegisterScreen()
+  data object LocationScreen : RegisterScreen()
   data object EnterName : RegisterScreen()
   data object EnterCredentials : RegisterScreen()
+  data object HomeScreen : RegisterScreen()
 }
 
 @Composable
-fun WelcomeMainScreen() {
-  var currentScreen by remember { mutableStateOf<RegisterScreen>(Welcome) }
+fun WelcomeMainScreen(navController: NavHostController, context: Context) {
+  var currentScreen by remember { mutableStateOf<RegisterScreen>(UserTypeScreen) }
 
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,19 +39,19 @@ fun WelcomeMainScreen() {
     modifier = Modifier.fillMaxSize()
   ) {
     AnimatedVisibility(
-      visible = currentScreen is Welcome,
+      visible = currentScreen is UserTypeScreen,
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      WelcomeScreen()
+      UserTypeScreen(navController)
     }
 
     AnimatedVisibility(
-      visible = currentScreen is BuyerOrSeller,
+      visible = currentScreen is LocationScreen,
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      BuyerOrSellerScreen()
+      MapLocationScreen(context)
     }
 
     AnimatedVisibility(
@@ -69,20 +74,16 @@ fun WelcomeMainScreen() {
 
     Button(onClick = {
       currentScreen = when (currentScreen) {
-        is Welcome -> BuyerOrSeller
-        is BuyerOrSeller -> EnterName
+        is UserTypeScreen -> LocationScreen
+        is LocationScreen -> EnterName
         is EnterName -> EnterCredentials
-        is EnterCredentials -> Welcome // Or navigate to some other screen
+        is EnterCredentials -> HomeScreen
+        HomeScreen -> TODO()
       }
     }) {
       Text(text = "Next")
     }
   }
-}
-
-@Composable
-fun BuyerOrSellerScreen() {
-  Text(text = "Are you a Buyer or Seller?", fontSize = 24.sp)
 }
 
 @Composable
@@ -95,9 +96,9 @@ fun EnterCredentialsScreen() {
   Text(text = "Enter your Email and Password", fontSize = 24.sp)
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewRegisterMainScreen() {
-  WelcomeMainScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewRegisterMainScreen() {
+//  WelcomeMainScreen(navController)
+//}
 
