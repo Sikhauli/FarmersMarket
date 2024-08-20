@@ -1,47 +1,20 @@
-package com.example.farmersmarket.utils
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 
-import android.annotation.SuppressLint
-import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+data class BottomNavItem(val route: String, val icon: ImageVector, val label: String)
 
-@SuppressLint("MissingPermission")
-@Composable
-fun rememberLocationProviderClient(context: Context): FusedLocationProviderClient {
-  val fusedLocationProviderClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-  val coroutineScope = rememberCoroutineScope()
-
-  return remember {
-    fusedLocationProviderClient
-  }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-fun LocationPermission(
-  onPermissionGranted: (Boolean) -> Unit
-) {
-  val permissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
-  val updatedPermissionGranted = rememberUpdatedState(onPermissionGranted)
-
-  LaunchedEffect(permissionState) {
-    if (permissionState.status.isGranted) {
-      updatedPermissionGranted.value(true)
-    } else {
-      permissionState.launchPermissionRequest()
-    }
-  }
-
-  permissionState.status.isGranted
-}
-
+val bottomNavItems = listOf(
+  BottomNavItem("Home", Icons.Default.Home, "Home"),
+  BottomNavItem("Explore", Icons.Default.Search, "Explore"),
+  BottomNavItem("Add", Icons.Default.ArrowDropDown, "Add"),
+  BottomNavItem("Farmers", Icons.Default.Person, "Farmers"),
+  BottomNavItem("Cart", Icons.Default.ShoppingCart, "Cart"),
+  )
 
 

@@ -72,12 +72,16 @@ android {
 
 dependencies {
 
-  // Mapbox Maps SDK
-  implementation(libs.plugin.gestures)
-  implementation(libs.plugin.compose)
-  implementation(libs.android)
-  implementation(libs.mapbox.android.sdk)
+  implementation(libs.androidx.concurrent.futures)
 
+  //gms:play-services-location
+  implementation(libs.play.services.location.v2101)
+
+  //Coroutines
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.kotlinx.coroutines.android)
+
+  // Mapbox Maps SDK
   implementation(libs.play.services.maps.v1802)
   implementation(libs.osmdroid.android)
 
@@ -89,11 +93,6 @@ dependencies {
   //Lifecycle
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.androidx.lifecycle.runtime.compose)
-
-  //Google Services & Maps
-  implementation(libs.play.services.location)
-  implementation(libs.maps.compose.v290)
-  implementation(libs.play.services.maps)
 
   //Accompanist (Permission)
   implementation(libs.accompanist.permissions)

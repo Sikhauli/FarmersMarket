@@ -25,14 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.farmersmarket.R
 
 @Composable
-fun UserTypeScreen(navController: NavHostController) {
+fun UserTypeScreen(onNext: () -> Unit) {
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -74,6 +72,9 @@ fun UserTypeScreen(navController: NavHostController) {
           .fillMaxHeight()
           .width(170.dp)
           .border(1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
+          .clickable {
+            onNext()
+          }
       ) {
         Column(
           modifier = Modifier
@@ -116,7 +117,7 @@ fun UserTypeScreen(navController: NavHostController) {
           .width(200.dp)
           .border(1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
           .clickable {
-            navController.navigate("details")
+            onNext()
           }
       ) {
         Column(
@@ -156,7 +157,6 @@ fun UserTypeScreen(navController: NavHostController) {
     }
   }
 }
-
 
 //@Preview(showBackground = true, showSystemUi = true)
 //@Composable

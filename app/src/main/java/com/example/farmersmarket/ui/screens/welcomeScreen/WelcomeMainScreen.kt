@@ -1,36 +1,34 @@
 package com.example.farmersmarket.ui.screens.welcomeScreen
 
-import MapLocationScreen
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.farmersmarket.ui.screens.homeScreen.HomeMainScreen
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.EnterCredentials
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.EnterName
-import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.HomeScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.HomeMainScreen
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.LocationScreen
 import com.example.farmersmarket.ui.screens.welcomeScreen.RegisterScreen.UserTypeScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.component.CredentialsScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.component.LocationScreen
+import com.example.farmersmarket.ui.screens.welcomeScreen.component.UserNameScreen
 import com.example.farmersmarket.ui.screens.welcomeScreen.component.UserTypeScreen
-
 
 sealed class RegisterScreen {
   data object UserTypeScreen : RegisterScreen()
   data object LocationScreen : RegisterScreen()
   data object EnterName : RegisterScreen()
   data object EnterCredentials : RegisterScreen()
-  data object HomeScreen : RegisterScreen()
+  data object HomeMainScreen : RegisterScreen()
 }
 
 @Composable
-fun WelcomeMainScreen(navController: NavHostController, context: Context) {
+fun WelcomeMainScreen(navController: NavHostController) {
   var currentScreen by remember { mutableStateOf<RegisterScreen>(UserTypeScreen) }
 
   Column(
@@ -43,7 +41,9 @@ fun WelcomeMainScreen(navController: NavHostController, context: Context) {
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      UserTypeScreen(navController)
+      UserTypeScreen(onNext = {
+        currentScreen = LocationScreen
+      })
     }
 
     AnimatedVisibility(
@@ -51,7 +51,11 @@ fun WelcomeMainScreen(navController: NavHostController, context: Context) {
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      MapLocationScreen(context)
+      LocationScreen(
+        onNext = {
+        currentScreen = EnterName
+      }
+      )
     }
 
     AnimatedVisibility(
@@ -59,7 +63,9 @@ fun WelcomeMainScreen(navController: NavHostController, context: Context) {
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      EnterNameScreen()
+      UserNameScreen(onNext = {
+        currentScreen = EnterCredentials
+      })
     }
 
     AnimatedVisibility(
@@ -67,38 +73,23 @@ fun WelcomeMainScreen(navController: NavHostController, context: Context) {
       enter = fadeIn(),
       exit = fadeOut()
     ) {
-      EnterCredentialsScreen()
+      CredentialsScreen(onNext = {
+        currentScreen = HomeMainScreen
+      })
     }
 
-    Spacer(modifier = Modifier.height(20.dp))
-
-    Button(onClick = {
-      currentScreen = when (currentScreen) {
-        is UserTypeScreen -> LocationScreen
-        is LocationScreen -> EnterName
-        is EnterName -> EnterCredentials
-        is EnterCredentials -> HomeScreen
-        HomeScreen -> TODO()
-      }
-    }) {
-      Text(text = "Next")
+    AnimatedVisibility(
+      visible = currentScreen is HomeMainScreen,
+      enter = fadeIn(),
+      exit = fadeOut()
+    ) {
+      HomeMainScreen(navController)
     }
+
   }
 }
 
-@Composable
-fun EnterNameScreen() {
-  Text(text = "Enter your Name", fontSize = 24.sp)
-}
 
-@Composable
-fun EnterCredentialsScreen() {
-  Text(text = "Enter your Email and Password", fontSize = 24.sp)
-}
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewRegisterMainScreen() {
-//  WelcomeMainScreen(navController)
-//}
+
 
